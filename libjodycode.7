@@ -1,0 +1,202 @@
+.\" Copyright (C) 2023-2024 by Jody Bruchon <jody@jodybruchon.com>
+.TH "LIBJODYCODE" "7" "2024-01-21" "4.0" "libjodycode"
+.SH NAME
+libjodycode \- shared code used by several tools written by Jody Bruchon
+
+.SH SYNOPSIS
+.B #include <libjodycode.h>
+
+.SS "Standard calls API"
+.nf
+.BI "int jc_access(const char *" pathname ", int " mode ")"
+.BI "FILE *jc_fopen(const char *" pathname ", const JC_WCHAR_T *" mode ")"
+.BI "int jc_fwprint(FILE * const restrict " stream ", const char * const restrict " str ", const int " cr ")"
+.BI "int jc_link(const char *" path1 ", const char *" path2 ");"
+.BI "int jc_rename(const char *" oldpath ", const char *" newpath ")"
+.BI "int jc_remove(const char *" pathname ")"
+.BI "int jc_stat(const char *" filename ", struct JC_STAT *" buf ")"
+
+.SS "Alarm API"
+.nf
+.BI "int jc_alarm_ring"
+.BI "int jc_start_alarm(const unsigned int " seconds ", const int " repeat ")"
+.BI "int jc_stop_alarm(void)"
+
+.SS "Cacheinfo API"
+.nf
+.BI "void jc_get_proc_cacheinfo(struct jc_proc_cacheinfo *" pci ")"
+
+.SS "Error API"
+.nf
+.BI "const char *jc_get_errname(int " errnum ")"
+.BI "const char *jc_get_errdesc(int " errnum ")"
+.BI "int jc_print_error(int " errnum ")"
+
+.SS "jodyhash API"
+.nf
+.BI "int jc_block_hash(jodyhash_t *" data ", jodyhash_t *" hash ", const size_t " count ")"
+.IP JODY_HASH_VERSION 20
+version of jody_hash the library currently uses
+
+.SS "OOM (out-of-memory) API"
+.nf
+.BI "void jc_oom(const char * const restrict " msg ")"
+.BI "void jc_nullptr(const char * restrict " func ")"
+
+.SS "Path manipulation API"
+.nf
+.BI "int jc_collapse_dotdot(char * const " path ")"
+.BI "int jc_make_relative_link_name(const char * const " src ", const char * const " dest ", char *" rel_path ")"
+
+.SS "Size Suffix API"
+.nf
+.BI "const struct jc_size_suffix jc_size_suffix[]"
+
+.SS "Numerically correct string comparison API"
+.nf
+.BI "int jc_numeric_strcmp(char * restrict " c1 ", char * restrict " c2 ", int " insensitive ")"
+
+.SS "String API"
+.nf
+.BI "int jc_strncaseeq(const char *" s1 ", const char *" s2 ", size_t " len ")"
+.BI "int jc_strcaseeq(const char *" s1 ", const char *" s2 ")"
+.BI "int jc_strneq(const char *" s1 ", const char *" s2 ", size_t " len ")"
+.BI "int jc_streq(const char *" s1 ", const char *" s2 ")"
+
+.SS "Time API"
+.nf
+.BI "time_t jc_strtoepoch(const char * const " datetime ")"
+.BI "time_t jc_nttime_to_unixtime(const uint64_t * const restrict " timestamp ")"
+.BI "time_t jc_unixtime_to_nttime(const uint64_t * const restrict " timestamp ")"
+
+.SS "Version API"
+.nf
+.BI "const char *jc_version"
+.BI "const char *jc_verdate"
+.BI "const int jc_api_version"
+.BI "const int jc_api_featurelevel"
+.BI "const int jc_jodyhash_version"
+.BI "const unsigned char jc_api_versiontable[]"
+
+.SS "Windows stat() mode test definitions"
+.IP S_ISARCHIVE(st_mode) 22
+is Windows archive attribute set?
+.IP S_ISRO(st_mode) 22
+is Windows read-only attribute set?
+.IP S_ISHIDDEN(st_mode) 22
+is Windows hidden attribute set?
+.IP S_ISSYSTEM(st_mode) 22
+is Windows system attribute set?
+.IP S_ISCRYPT(st_mode) 22
+is it a Windows encrypted file/dir?
+.IP S_ISDIR(st_mode) 22
+is it a directory?
+.IP S_ISCOMPR(st_mode) 22
+Windows compressed attribute set
+.IP S_ISREPARSE(st_mode) 22
+is it a Windows reparse point?
+.IP S_ISSPARSE(st_mode) 22
+is it a Windows sparse file?
+.IP S_ISTEMP(st_mode) 22
+is it a Windows temporary file?
+.IP S_ISREG(st_mode) 22
+is it a regular file?
+
+.SS "Windows Unicode API"
+.nf
+.BI "void jc_set_output_modes(unsigned int " modes ")"
+.BI "void jc_slash_convert(char *" path ")"
+.BI "int jc_string_to_wstring(const char * const restrict " string ", JC_WCHAR_T **" wstring ")"
+.BI "int jc_widearg_to_argv(int " argc ", JC_WCHAR_T **" wargv ", char **" argv ")"
+
+.SS "Windows Unicode wide equivalence definitions"
+.nf
+.IP JC_WCHAR_T 31
+wchar_t for Windows Unicode, char otherwise
+.IP JC_FILE_MODE_RDONLY 31
+string "rb"
+.IP JC_FILE_MODE_WRONLY 31
+string "wb"
+.IP JC_FILE_MODE_RW 31
+string "w+b"
+.IP JC_FILE_MODE_RW_EXISTING 31
+string "r+b"
+.IP JC_FILE_MODE_WRONLY_APPEND 31
+string "ab"
+.IP JC_FILE_MODE_RW_APPEND 31
+string "a+b"
+.IP JC_FILE_MODE_RDONLY_SEQ 31
+string "rbS" (Windows) or "rb"
+.IP JC_FILE_MODE_WRONLY_SEQ 31
+string "wbS" (Windows) or "wb"
+.IP JC_FILE_MODE_RW_SEQ 31
+string "w+bS" (Windows) or "w+b"
+.IP JC_FILE_MODE_RW_EXISTING_SEQ 31
+string "r+bS" (Windows) or "r+b"
+.IP JC_FILE_MODE_WRONLY_APPEND_SEQ 31
+string "abS" (Windows) or "ab"
+.IP JC_FILE_MODE_RW_APPEND_SEQ 31
+string "a+bS" (Windows) or "a+b"
+.IP JC_F_OK 10
+unistd.h F_OK
+.IP JC_R_OK 10
+unistd.h R_OK
+.IP JC_W_OK 10
+unistd.h W_OK
+.IP JC_X_OK 10
+unistd.h X_OK
+
+.SS "Windows Unicode conversion shortcut definitions"
+.nf
+.BI "M2W(char *" a ", JC_WCHAR_T *" b ")"
+convert string a to wide string b using MultiByteToWideChar()
+
+.BI "W2M(JC_WCHAR_T *" a ", char *" b ")"
+convert wide string a to normal string b using WideCharToMultiByte()
+
+
+.PP
+.SH DESCRIPTION
+libjodycode is a software code library containing code shared among several of
+the programs written by Jody Bruchon such as imagepile, jdupes, winregfs, and
+zeromerge. These shared pieces of code were copied between each program as
+they were updated. As the number of programs increased and keeping these
+pieces of code synced became more annoying, the decision was made to combine
+all of them into a single reusable shared library.
+
+.SH NOTES
+
+libjodycode is created and maintained by Jody Bruchon <jody@jodybruchon.com>
+
+General information, help, and tech info: https://www.jdupes.com/
+
+Development, source code, releases: https://codeberg.org/jbruchon/libjodycode
+
+If you find this software useful, please consider financially supporting
+its development through the author's home page:
+
+https://www.jodybruchon.com/
+
+.SH LICENSE
+
+MIT License
+
+Copyright (c) 2014-2024 Jody Lee Bruchon <jody@jodybruchon.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
